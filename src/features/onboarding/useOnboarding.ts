@@ -37,7 +37,10 @@ export function useOnboarding() {
   )
 
   const currentQuestion = visibleQuestions[stepIndex]
-  const selectedIds = currentQuestion ? (answers[currentQuestion.id] ?? []) : []
+  const selectedIds = useMemo(
+    () => (currentQuestion ? (answers[currentQuestion.id] ?? []) : []),
+    [currentQuestion, answers],
+  )
   const canContinue = selectedIds.length > 0
   const isLastStep = isPathChosen && stepIndex === visibleQuestions.length - 1
 

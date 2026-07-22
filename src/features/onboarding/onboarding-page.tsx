@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/button'
 import { StickyCta } from '@/components/sticky-cta'
+import { clearCompletedTaskIds, saveAnswers } from '@/features/profile/profile.storage'
 import { ROUTES } from '@/routes.constants'
 import { AnswerOptionButton } from './answer-option-button'
 import { OnboardingProgress } from './onboarding-progress'
@@ -9,6 +10,7 @@ import { useOnboarding } from './useOnboarding'
 export function OnboardingPage() {
   const navigate = useNavigate()
   const {
+    answers,
     currentQuestion,
     selectedIds,
     blockedIds,
@@ -31,6 +33,11 @@ export function OnboardingPage() {
 
   const handleContinue = () => {
     if (isLastStep) {
+      // Erst am Ende speichern: vorher sind die Antworten unvollständig und das
+      // Dashboard könnte eine halbe Liste bauen.
+      saveAnswers(answers)
+      // Neue Antworten ergeben einen neuen Ausgangszustand – alter Fortschritt passt nicht mehr dazu.
+      clearCompletedTaskIds()
       navigate(ROUTES.dashboard)
       return
     }

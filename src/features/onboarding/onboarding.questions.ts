@@ -4,12 +4,49 @@ export const MODE_QUESTION_ID = 'mode'
 export const MODE_AFTER_DEATH = 'after-death'
 export const MODE_PREPARE = 'prepare'
 
+const DONE_QUESTION_ID = 'done'
+const FOCUS_QUESTION_ID = 'prepare-focus'
+
+export type OnboardingMode = typeof MODE_AFTER_DEATH | typeof MODE_PREPARE
+
+/**
+ * Options-IDs, auf die andere Features verweisen (das Dashboard baut daraus seine Liste).
+ * Umbenennen bricht bereits gespeicherte Antworten – dann Storage-Version hochzählen.
+ */
+export const OPTION = {
+  doneCertificate: 'certificate',
+  doneFuneral: 'funeral',
+  doneRegistry: 'registry',
+  doneNothing: 'nothing',
+  focusDocuments: 'documents',
+  focusContracts: 'contracts',
+  focusDigital: 'digital',
+  focusWishes: 'wishes',
+} as const
+
+/** null, solange die Einstiegsfrage nicht beantwortet ist. */
+export function getMode(answers: OnboardingAnswers): OnboardingMode | null {
+  const selected = answers[MODE_QUESTION_ID]?.[0]
+  if (selected === MODE_AFTER_DEATH || selected === MODE_PREPARE) return selected
+  return null
+}
+
+/** Was laut Onboarding schon erledigt ist – Options-IDs der Frage "Was ist schon erledigt?". */
+export function getCompletedOptionIds(answers: OnboardingAnswers): string[] {
+  return answers[DONE_QUESTION_ID] ?? []
+}
+
+/** Welche Vorsorge-Bereiche gewählt wurden. */
+export function getFocusAreaIds(answers: OnboardingAnswers): string[] {
+  return answers[FOCUS_QUESTION_ID] ?? []
+}
+
 function isAfterDeath(answers: OnboardingAnswers): boolean {
-  return answers[MODE_QUESTION_ID]?.includes(MODE_AFTER_DEATH) === true
+  return getMode(answers) === MODE_AFTER_DEATH
 }
 
 function isPreparing(answers: OnboardingAnswers): boolean {
-  return answers[MODE_QUESTION_ID]?.includes(MODE_PREPARE) === true
+  return getMode(answers) === MODE_PREPARE
 }
 
 /**
@@ -61,17 +98,17 @@ export const QUESTIONS: Question[] = [
     ],
   },
   {
-    id: 'done',
+    id: DONE_QUESTION_ID,
     eyebrow: 'Stand',
     title: 'Was ist schon erledigt?',
     hint: 'Mehrfachauswahl. Was Sie hier abhaken, blenden wir aus Ihrer Liste aus.',
     multiple: true,
     showIf: isAfterDeath,
     options: [
-      { id: 'certificate', label: 'Totenschein liegt vor' },
-      { id: 'funeral', label: 'Bestattung ist beauftragt' },
-      { id: 'registry', label: 'Sterbeurkunde ist beantragt' },
-      { id: 'nothing', label: 'Noch nichts davon', exclusive: true },
+      { id: OPTION.doneCertificate, label: 'Totenschein liegt vor' },
+      { id: OPTION.doneFuneral, label: 'Bestattung ist beauftragt' },
+      { id: OPTION.doneRegistry, label: 'Sterbeurkunde ist beantragt' },
+      { id: OPTION.doneNothing, label: 'Noch nichts davon', exclusive: true },
     ],
   },
   {
@@ -87,17 +124,17 @@ export const QUESTIONS: Question[] = [
     ],
   },
   {
-    id: 'prepare-focus',
+    id: FOCUS_QUESTION_ID,
     eyebrow: 'Vorsorge',
     title: 'Womit möchten Sie anfangen?',
     hint: 'Mehrfachauswahl. Sie können jederzeit weitere Bereiche ergänzen.',
     multiple: true,
     showIf: isPreparing,
     options: [
-      { id: 'documents', label: 'Wichtige Dokumente hinterlegen' },
-      { id: 'contracts', label: 'Verträge und Versicherungen' },
-      { id: 'digital', label: 'Digitale Konten und Passwörter' },
-      { id: 'wishes', label: 'Meine Wünsche festhalten' },
+      { id: OPTION.focusDocuments, label: 'Wichtige Dokumente hinterlegen' },
+      { id: OPTION.focusContracts, label: 'Verträge und Versicherungen' },
+      { id: OPTION.focusDigital, label: 'Digitale Konten und Passwörter' },
+      { id: OPTION.focusWishes, label: 'Meine Wünsche festhalten' },
     ],
   },
   {
