@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+
+/* Design-Tokens. In Tailwind v4 erzeugt jeder Eintrag hier automatisch Utilities:
+   --color-primary  ->  bg-primary / text-primary / border-primary */
+@theme {
+  --color-primary: #2d4e43;
+  --color-primary-hover: #3d6b5c;
+  --color-primary-soft: #e8f0ec;
+  --color-base: #fafaf7;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f5f3ee;
+  --color-sage: #a8c5b8;
+  --color-line: #e8e4dc;
+  --color-line-strong: #d9d3c8;
+  --color-ink: #2c2c2a;
+  --color-ink-muted: #6b6860;
+  --color-ink-soft: #9b978f;
+  --color-accent: #c4a265;
+  --color-accent-soft: #fef7ec;
+  --color-success: #5b8a72;
+  --color-danger: #a34a40;
+
+  --font-heading: 'Fraunces', 'Merriweather', serif;
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* Der "Faden": vertikale Linie, die den Weg durch die Landingpage zeichnet.
+   Verlauf von Sage nach Primärgrün – der Weg führt sichtbar irgendwohin. */
+.thread-line {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-sage) 12%,
+    var(--color-primary) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
